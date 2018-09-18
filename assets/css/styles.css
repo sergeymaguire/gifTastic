@@ -81,3 +81,17 @@ button:hover{
     font-size: 13px;
     cursor: pointer;
 }
+img{
+    width: 200px;
+    height: 200px;
+}
+#mainContent{
+    max-width: 1000px;
+}
+span{
+    float: right;
+    margin-right: 90px;
+}
+#searches{
+    display: inline;
+}

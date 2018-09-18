@@ -2,9 +2,9 @@ $(document).ready(function () {
     var numberOfGifs = 10;
     var cutOffRating = "R";
     var datastate = $(this).attr("data-state");
-    var topic = ["Star Wars", "Pulp Fiction", "Reservoir Dogs", "The Evil Dead", "Mad Max", "Terminator", "Pineapple Express", "Step Brothers", "The Conjuring", "American Psycho", "Scarface", "Jaws", "The Godfather", "Saving Private Ryan", "Gladiator", "Hannibal", "The Crazies", "Bourne Ultimatum", "Superbad", "Billy Madison", "Lord of the Rings", "50 First Dates", "Benchwarmers"];
+    var topic = ["Pulp Fiction", "Reservoir Dogs", "The Evil Dead", "Mad Max", "Terminator", "Pineapple Express", "Step Brothers", "American Psycho", "Scarface", "Jaws", "The Godfather"];
     $("#movies").on("click", function () {
-        var queryURL = "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=" + $("#searchGifs").val().trim();
+        var queryURL = "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=movies" + $("#searchGifs").val().trim(); + 
         reset();
 
         function reset() {
