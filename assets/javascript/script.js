@@ -4,8 +4,10 @@ $(document).ready(function () {
     var datastate = $(this).attr("data-state");
     var topic = ["Pulp Fiction", "Reservoir Dogs", "The Evil Dead", "Mad Max", "Terminator", "Pineapple Express", "Step Brothers", "American Psycho", "Scarface", "Jaws", "The Godfather"];
     $("#movies").on("click", function () {
-        var queryURL = "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=movies" + $("#searchGifs").val().trim(); + 
+        var search = $("#searchGifs").val().trim();
+        if(!search) return;
         reset();
+
 
         function reset() {
             $("#resetGifs").on("click", function () {
@@ -14,24 +16,7 @@ $(document).ready(function () {
         }
 
         event.preventDefault();
-        $.ajax({
-                url: queryURL,
-                method: "GET"
-            })
-            .then(function (response) {
-                var movie = $("#searchGifs").val(),
-                    imageHtml = "";
-                    //<img src="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-still="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200_s.gif" data-animate="http://media1.giphy.com/media/3o85xkQpyMlnBkpB9C/200.gif" data-state="still" class="gif">
-                imageHtml = imageHtml + "<img id='" + response.meta.response_id 
-                          + "' src='" + response.data.image_original_url + "'"
-                          + "' data-animated='off'" 
-                          + "' data-still='" + response.data.images["downsized_still"].url + "'"
-                          + "' data-animate='" + response.data.image_original_url + "'"
-                          + ">" + "</img>";
-                console.log(imageHtml);
-                $("#mainContent").prepend(imageHtml);
-                $("header").append("<button>" + movie + "</button>");
-            });
+        getGifs(search, true);
     });
 
     makeButtons();
@@ -39,6 +24,7 @@ $(document).ready(function () {
         console.log(this.id);
         var i = parseInt(this.id)
         console.log(topic[i]);
+        getGifs(topic[i], false);
     });
     $('body').on('click', 'img', handleImageClick);
 
@@ -74,3 +60,25 @@ $(document).ready(function () {
 
 
 });
+
+function getGifs(search, addButton) {
+    var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=UBRXS2Hn92b38ylqRMMlqDBskoLpYgzz&limit=10&q=" + search;
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+    })
+        .then(function (response) {
+            var movie = $("#searchGifs").val(), imageHtml = "";
+            for (var i = 0; i < response.data.length; i++) {
+                imageHtml = imageHtml + "<img id='" + response.meta.response_id +
+                    "' src='" + response.data[i].images.original.webp + "'" +
+                    " data-animated='off'" +
+                    " data-still='" + response.data[i].images.original_still.url + "'" +
+                    " data-animate='" + response.data[i].images.original.webp + "'>";
+            }
+            console.log(imageHtml);
+            $("#mainContent").prepend(imageHtml);
+            if(addButton)
+              $("header").append("<button>" + movie + "</button>");
+        });
+}
