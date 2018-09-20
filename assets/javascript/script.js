@@ -1,3 +1,4 @@
+var btnId= 1000;
 $(document).ready(function () {
     var numberOfGifs = 10;
     var cutOffRating = "R";
@@ -18,8 +19,7 @@ $(document).ready(function () {
     });
 
     makeButtons();
-    $('button').on("click", function () {
-        console.log(this.id);
+    $('.fixedbtn').on("click", function () {
         var i = parseInt(this.id)
         console.log(topic[i]);
         getGifs(topic[i], false);
@@ -27,20 +27,14 @@ $(document).ready(function () {
     $('body').on('click', 'img', handleImageClick);
 
     function handleImageClick() {
-        console.log("clicked")
         var id = "#" + this.id;
         var imgDatastate = $(id).data("animated");
-        if (imgDatastate === "off") {
-            var animatedImage = $(id).data("animate");
-            console.log("animatedImage " + animatedImage);
+        var animatedImage = $(id).data("animate");
+        if (this.src !== animatedImage) {
             this.src = animatedImage;
-            //$(id).attr("src", $(id).attr("data-animate"));
-            $(id).data("animated", "on");
         } else {
             var stillImage = $(id).data("still");
             this.src = stillImage;
-            console.log("stillImage " + stillImage);
-            $(id).data("animated", "off");
         }
     }
 
@@ -48,13 +42,14 @@ $(document).ready(function () {
         $("#mainContent").empty();
         var buttonHtml = "";
         for (i = 0; i < topic.length; i++) {
-            buttonHtml = buttonHtml + "<button id='" + i + "' character-btn>" + topic[i] + "</button>";
+            buttonHtml = buttonHtml + "<button id='" + i + "' class='fixedbtn'>" + topic[i] + "</button>";
         };
         $("header").append(buttonHtml);
     };
-
+    localStorage.setItem(getGifs)
+});
     function getGifs(search, addButton) {
-        var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=UBRXS2Hn92b38ylqRMMlqDBskoLpYgzz&rating=g&limit=10&q=" + search;
+        var queryURL = "https://api.giphy.com/v1/gifs/search?api_key=UBRXS2Hn92b38ylqRMMlqDBskoLpYgzz&rating=r&limit=10&q=" + search;
         $.ajax({
                 url: queryURL,
                 method: "GET"
@@ -63,23 +58,24 @@ $(document).ready(function () {
                 var movie = $("#searchGifs").val(),
                     imageHtml = "";
                 for (var i = 0; i < response.data.length; i++) {
-                    imageHtml = imageHtml + "<img id='" + response.meta.response_id +
+                    imageHtml = imageHtml + "<img id='" + response.data[i].id +
                         "' src='" + response.data[i].images.original.webp + "'" +
-                        " data-animated='off'" +
                         " data-still='" + response.data[i].images.original_still.url + "'" +
                         " data-animate='" + response.data[i].images.original.webp + "'>";
                 }
-                console.log(imageHtml);
                 $("#mainContent").prepend(imageHtml);
-                if (addButton)
-                    $("header").append("<button onclick='myFunction()'>" + movie + "</button>");
+                if (addButton) {
+                    $("header").append("<button class='dyna' id='" + btnId++ + "' monclick='handleButtonClick()'>" + movie + "</button>");
+                    $('.dyna').on("click", function () {
+                        var i = parseInt(this.id)
+                        console.log("dynamic button clicked");
+                        getGifs(this.textContent, false);
+                    });
+                }
             });
     }
-});
 
-function handleButtonClick() {
-    console.log(this.id);
+function handleButtonClick(e) {
     var i = parseInt(this.id)
-    console.log(topic[i]);
     getGifs(topic[i], false);
 };
